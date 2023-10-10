@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:radio/constants/colors.dart';
@@ -36,20 +37,25 @@ class _RadioPageState extends State<RadioPage> {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(response.body);
         if (data.containsKey("radios")) {
-          // Access the 'radios' key, assuming it contains the list of radios
           List<dynamic> radioData = data["radios"];
           radioList = radioData.map((e) => RadioModel.fromJson(e)).toList();
           setState(() {});
         } else {
-          print("JSON Structure Error: 'radios' key not found.");
+          if (kDebugMode) {
+            print("JSON Structure Error: 'radios' key not found.");
+          }
         }
       } else {
-        print("HTTP Error: ${response.statusCode}");
+        if (kDebugMode) {
+          print("HTTP Error: ${response.statusCode}");
+        }
         // Handle HTTP error (e.g., response.statusCode is not 200)
         // You can add error handling logic here
       }
     }).catchError((error) {
-      print("HTTP Request Error: $error");
+      if (kDebugMode) {
+        print("HTTP Request Error: $error");
+      }
       // Handle HTTP request errors (e.g., network issues)
       // You can add error handling logic here
     });
